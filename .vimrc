@@ -4,4 +4,5 @@ source ~/neobundle/.vimrc.neosnippet
 source ~/neobundle/.vimrc.coffeescript
 source ~/neobundle/.vimrc.rails
 source ~/neobundle/.vimrc.vim-ref
+source ~/neobundle/.vimrc.unite
 
