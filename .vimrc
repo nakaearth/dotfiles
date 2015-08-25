@@ -225,6 +225,8 @@ let g:syntastic_mode_map = { 'mode': 'active',
                            \ 'passive_filetypes': ['html', 'css' ] }
 
 
+NeoBundle "ctrlpvim/ctrlp.vim"
+
 "----------------------------------------------------------
 " Complete
 "----------------------------------------------------------
@@ -622,6 +624,7 @@ nnoremap <C-q> :WinResizerStartResize<CR>
 "----------------------------------------------------------
 vnoremap <silent> => :Align @1 =><CR>
 vnoremap <silent> = :Align @1 =<CR>
+vnoremap <silent> += :Align @1 +=<CR>
 vnoremap <silent> == =
 
 
@@ -809,13 +812,14 @@ set t_Co=256
 " set background=dark
 " colorscheme ir_black
 " colorscheme hybrid
-colorscheme Tomorrow-Night-Bright
-" colorscheme molokai
+"colorscheme Tomorrow-Night-Brigh
+colorscheme molokai
 
 
 "====================================================================================
 " Complete
 "====================================================================================
+syntax on
 set ignorecase
 set smartcase
 set hlsearch
