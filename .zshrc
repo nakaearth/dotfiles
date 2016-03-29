@@ -6,6 +6,7 @@ export LANG=ja_JP.UTF-8  # 文字コードをUTF-8に設定
 export KCODE=u           # KCODEにUTF-8を設定
 export AUTOFEATURE=true  # autotestでfeatureを動かす
 
+export PGDATA=/usr/local/var/postgres
 
 # homebrewを優先
 export PATH=~/bin:/usr/local/bin:$PATH
@@ -52,6 +53,8 @@ bindkey "^N" history-beginning-search-forward-end
 # すべてのヒストリを表示する
 function history-all { history -E 1 }
 
+# cdしたあとで、自動的に ls する
+function chpwd() { ls -1 }
 
 # ------------------------------
 # Look And Feel Settings
@@ -104,8 +107,6 @@ kterm*|xterm*|)
 esac
 
 #rvm
-#PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
-if [[ -s ~/.rvm/scripts/rvm ]] ; then source ~/.rvm/scripts/rvm ; fi
 
 M2_HOME=/usr/local/libs/apache-maven-3.0.4
 GRAILS_HOME=/usr/local/libs/grails-2.2.4
@@ -125,11 +126,69 @@ PATH=/usr/local/libs/packer:$PATH
 PATH=/usr/local/Cellar/git/1.8.3.4/bin:$PATH
 PATH=/usr/local/libs/gitsetting:$PATH
 
-#[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 ### RVM ###
-if [[ -s ~/.rvm/scripts/rvm ]] ; then source ~/.rvm/scripts/rvm ; fi
+function is_exists() { type "$1" >/dev/null 2>&1; return $?; }
+function is_osx() { [[ $OSTYPE == darwin* ]]; }
+function is_screen_running() { [ ! -z "$STY" ]; }
+function is_tmux_runnning() { [ ! -z "$TMUX" ]; }
+function is_screen_or_tmux_running() { is_screen_running || is_tmux_runnning; }
+function shell_has_started_interactively() { [ ! -z "$PS1" ]; }
+function is_ssh_running() { [ ! -z "$SSH_CONECTION" ]; }
 
-#awscli
+function tmux_automatically_attach_session()
+{
+    if is_screen_or_tmux_running; then
+        ! is_exists 'tmux' && return 1
+
+        if is_tmux_runnning; then
+            echo "${fg_bold[red]} _____ __  __ _   ___  __ ${reset_color}"
+            echo "${fg_bold[red]}|_   _|  \/  | | | \ \/ / ${reset_color}"
+            echo "${fg_bold[red]}  | | | |\/| | | | |\  /  ${reset_color}"
+            echo "${fg_bold[red]}  | | | |  | | |_| |/  \  ${reset_color}"
+            echo "${fg_bold[red]}  |_| |_|  |_|\___//_/\_\ ${reset_color}"
+        elif is_screen_running; then
+            echo "This is on screen."
+        fi
+    else
+        if shell_has_started_interactively && ! is_ssh_running; then
+            if ! is_exists 'tmux'; then
+                echo 'Error: tmux command not found' 2>&1
+                return 1
+            fi
+
+            if tmux has-session >/dev/null 2>&1 && tmux list-sessions | grep -qE '.*]$'; then
+                # detached session exists
+                tmux list-sessions
+                echo -n "Tmux: attach? (y/N/num) "
+                read
+                if [[ "$REPLY" =~ ^[Yy]$ ]] || [[ "$REPLY" == '' ]]; then
+                    tmux attach-session
+                    if [ $? -eq 0 ]; then
+                        echo "$(tmux -V) attached session"
+                        return 0
+                    fi
+                elif [[ "$REPLY" =~ ^[0-9]+$ ]]; then
+                    tmux attach -t "$REPLY"
+                    if [ $? -eq 0 ]; then
+                        echo "$(tmux -V) attached session"
+                        return 0
+                    fi
+                fi
+            fi
+
+            if is_osx && is_exists 'reattach-to-user-namespace'; then
+                # on OS X force tmux's default command
+                # to spawn a shell in the user's namespace
+                tmux_config=$(cat $HOME/.tmux.conf <(echo 'set-option -g default-command "reattach-to-user-namespace -l $SHELL"'))
+                tmux -f <(echo "$tmux_config") new-session && echo "$(tmux -V) created new session supported OS X"
+            else
+                tmux new-session && echo "tmux created new session"
+            fi
+        fi
+    fi
+}
+tmux_automatically_attach_session
+#awscl##i
 #complete -C aws_completer aws
 export AWS_CONFIG_FILE=~/.aws/cli.conf
 export AWS_DEFAULT_OUTPUT=text
@@ -145,7 +204,15 @@ export DROP_BOX_APP_SECRET=g8lle79btop96jt
 export PANDASTREAM_URL=https://f889aba2dfc556805d76:9a6ccafe6399a4554b85@api.pandastream.com/3860f5eba6d42dd2bb7b9d106629e13f
 
 ### Aliases ###
-alias r=rails
+alias r=bundle exec rails
 alias v=vim
+alias ..="cd .."
+alias -s rb='ruby'
 
+#THIS MUST BE AT THE END OF THE FILE FOR GVM TO WORK!!!
+[[ -s "/Users/s_nakamura/.gvm/bin/gvm-init.sh" ]] && source "/Users/s_nakamura/.gvm/bin/gvm-init.sh"
 
+# added by travis gem
+[ -f /Users/s_nakamura/.travis/travis.sh ] && source /Users/s_nakamura/.travis/travis.sh
+
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
