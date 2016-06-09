@@ -1,3 +1,4 @@
+" Vime設定ファイル2016/06/01
 " 挙動を vi 互換ではなく、Vim のデフォルト設定にする
 set nocompatible
 " 一旦ファイルタイプ関連を無効化する
@@ -47,6 +48,11 @@ NeoBundle 'vim-scripts/AnsiEsc.vim'
 NeoBundle 'bronson/vim-trailing-whitespace'
 " less用のsyntaxハイライト
 NeoBundle 'KohPoll/vim-less'
+" 文字揃え
+NeoBundle 'junegunn/vim-easy-align'
+xmap ga <Plug>(EasyAlign)
+nmap ga <Plug>(EasyAlign))
+
 
 " コード補完
 NeoBundle 'Shougo/neocomplcache'
