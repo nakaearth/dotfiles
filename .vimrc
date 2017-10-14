@@ -52,6 +52,8 @@ NeoBundle 'KohPoll/vim-less'
 NeoBundle 'junegunn/vim-easy-align'
 xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign))
+" go plugin
+NeoBundle 'fatih/vim-go'
 
 
 " コード補完
