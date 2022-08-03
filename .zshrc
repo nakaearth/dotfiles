@@ -208,6 +208,13 @@ alias r=bundle exec rails
 alias v=vim
 alias ..="cd .."
 alias -s rb='ruby'
+alias bec='bundle exec rails c'
+alias bes='bundle exec rails s'
+alias gcm='git commit'
+alias gad='git add'
+alias gpl='git pull'
+alias gcop='git branch -a --sort=-authordate | cut -b 3- | perl -pe '\''s#^remotes/origin/###'\'' | perl -nlE '\''say if !$c{$_}++'\'' | grep -v -- "->" | peco | xargs git checkout'
+
 
 #THIS MUST BE AT THE END OF THE FILE FOR GVM TO WORK!!!
 [[ -s "/Users/s_nakamura/.gvm/bin/gvm-init.sh" ]] && source "/Users/s_nakamura/.gvm/bin/gvm-init.sh"

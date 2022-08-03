@@ -1,21 +1,10 @@
-" Vime設定ファイル2016/06/01
-" 挙動を vi 互換ではなく、Vim のデフォルト設定にする
 set nocompatible
-" 一旦ファイルタイプ関連を無効化する
-filetype off
+filetype plugin indent off
 
-""""""""""""""""""""""""""""""
-" プラグインのセットアップ
-""""""""""""""""""""""""""""""
 if has('vim_starting')
-  set nocompatible               " Be iMproved
-
-  " Required:
-  set runtimepath+=~/.vim/bundle/neobundle.vim/
+  set runtimepath+=~/.vim/bundle/neobundle.vim
+  call neobundle#rc(expand('~/.vim/bundle'))
 endif
-
-" Required:
-call neobundle#begin(expand('~/.vim/bundle/'))
 
 " Let NeoBundle manage NeoBundle
 " Required:
